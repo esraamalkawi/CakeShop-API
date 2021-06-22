@@ -42,7 +42,7 @@ exports.producList = async (req, res) => {
 exports.productUpdate = async (req, res) => {
   try {
     await req.product.update(req.body);
-    res.status(204).end();
+    res.status(201).json(req.product);
   } catch (error) {
     next(error);
   }

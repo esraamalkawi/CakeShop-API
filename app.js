@@ -2,8 +2,12 @@
 const express = require("express");
 const db = require("./db/models");
 const productRoutes = require("./routes/products");
+const cors = require("cors");
+
 // let products = require("./data");
 const app = express();
+
+app.use(cors());
 app.use(express.json());
 
 app.use("/products", productRoutes);
