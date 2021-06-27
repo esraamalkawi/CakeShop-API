@@ -1,8 +1,8 @@
-// const { response, request } = require("express");
 const express = require("express");
-const db = require("./db/models");
+
 const productRoutes = require("./routes/products");
 const cors = require("cors");
+const path = require("path");
 
 // let products = require("./data");
 const app = express();
@@ -11,8 +11,7 @@ app.use(cors());
 app.use(express.json());
 
 app.use("/products", productRoutes);
-
-db.sequelize.sync();
+app.use("/media", express.static(path.join(__dirname, "media")));
 
 app.use((err, req, res, next) => {
   res.status(err.status || 500).json({

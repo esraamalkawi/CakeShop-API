@@ -11,6 +11,9 @@ exports.fetchProduct = async (productId, next) => {
 
 exports.productCreate = async (req, res) => {
   try {
+    if (req.file) {
+      req.body.image = `http://${req.get("host")}/${req.file.path}`;
+    }
     const newProduct = await Product.create(req.body);
     res.status(201).json(newProduct);
   } catch (error) {
@@ -41,6 +44,9 @@ exports.producList = async (req, res) => {
 
 exports.productUpdate = async (req, res) => {
   try {
+    if (req.file) {
+      req.body.image = `http://${req.get("host")}/${req.file.path}`;
+    }
     await req.product.update(req.body);
     res.status(201).json(req.product);
   } catch (error) {
