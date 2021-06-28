@@ -6,7 +6,6 @@ const upload = require("../middleware/multer");
 const router = express.Router();
 
 const {
-  productCreate,
   producList,
   productDelete,
   productUpdate,
@@ -28,8 +27,6 @@ router.param("productId", async (req, res, next, productId) => {
 //another way to import
 // const{productControllers} = require("../controllers/productControllers");
 router.get("/", producList);
-
-router.post("/", upload.single("image"), productCreate);
 
 router.delete("/:productId", productDelete);
 

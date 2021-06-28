@@ -1,8 +1,14 @@
+const SequelizeSlugify = require("sequelize-slugify");
+
 module.exports = (sequelize, DataTypes) => {
-  return sequelize.define("Product", {
+  const Product = sequelize.define("Product", {
     name: {
       type: DataTypes.STRING,
       allowNull: false,
+    },
+    slug: {
+      type: DataTypes.STRING,
+      unique: true,
     },
     details: { type: DataTypes.STRING },
     price: {
@@ -15,4 +21,21 @@ module.exports = (sequelize, DataTypes) => {
     },
     image: { type: DataTypes.STRING },
   });
+  SequelizeSlugify.slugifyModel(Product, {
+    source: ["name"],
+  });
+
+  //relations
+  Product.associate = (models) => {
+    models.Shop.hasMany(Product, {
+      foreignKey: "shopId",
+      // allowNull: false,
+      as: "products",
+    });
+    Product.belongsTo(models.Shop, {
+      foreignKey: "shopId",
+    });
+  };
+
+  return Product;
 };
