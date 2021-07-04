@@ -4,12 +4,16 @@ const shopRoutes = require("./routes/shops");
 const userRoutes = require("./routes/users");
 const cors = require("cors");
 const path = require("path");
+const passport = require("passport");
+const { localStrategy } = require("./middleware/passport");
 
 // let products = require("./data");
 const app = express();
 
 app.use(cors());
 app.use(express.json());
+app.use(passport.initialize());
+passport.use(localStrategy);
 
 app.use(userRoutes);
 app.use("/products", productRoutes);
