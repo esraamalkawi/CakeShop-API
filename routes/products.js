@@ -1,7 +1,6 @@
 const express = require("express");
 const upload = require("../middleware/multer");
-
-// let products = require("../data");
+const passport = require("passport");
 
 const router = express.Router();
 
@@ -11,10 +10,13 @@ const {
   productUpdate,
   fetchProduct,
 } = require("../controllers/productControllers");
+const { fetchShop } = require("../controllers/shopControllers");
 
 router.param("productId", async (req, res, next, productId) => {
   const product = await fetchProduct(productId, next);
   if (product) {
+    const shop = await fetchShop(product.shopId, next);
+    req.shop = shop;
     req.product = product;
     next();
   } else {
@@ -28,28 +30,18 @@ router.param("productId", async (req, res, next, productId) => {
 // const{productControllers} = require("../controllers/productControllers");
 router.get("/", producList);
 
-router.delete("/:productId", productDelete);
+router.delete(
+  "/:productId",
+  passport.authenticate("jwt", { session: false }),
+  productDelete
+);
 
-router.put("/:productId", upload.single("image"), productUpdate);
+router.put(
+  "/:productId",
+  passport.authenticate("jwt", { session: false }),
+  upload.single("image"),
+  productUpdate
+);
 
+// passport.authenticate("jwt", { session: false })
 module.exports = router;
-// const express = require("express");
-// const productControllers = require("../controllers/productControllers");
-// const router = express.Router();
-
-// //  Create products route
-// router.post("/", productControllers.productCreate);
-
-// //Delete products route
-// router.delete("/:productID", productControllers.productDelete);
-
-// //Update products route
-// // router.put("/:productID", productCintroler.updateProducts);
-
-// // Pruduct list
-// router.get("/", productControllers.pruductList);
-
-// // // Delaile of products
-// // router.get("/:productID", productCintroler.delaileProduct);
-
-// module.exports = router;

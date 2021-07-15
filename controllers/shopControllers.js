@@ -14,6 +14,7 @@ exports.shopCreate = async (req, res, next) => {
     if (req.file) {
       req.body.image = `http://${req.get("host")}/${req.file.path}`;
     }
+    req.body.userId = req.user.id;
     const newShop = await Shop.create(req.body);
     res.status(201).json(newShop);
   } catch (error) {
@@ -61,12 +62,19 @@ exports.shopList = async (req, res, next) => {
 
 exports.productCreate = async (req, res, next) => {
   try {
-    if (req.file) {
-      req.body.image = `http://${req.get("host")}/${req.file.path}`;
+    if (req.shop.userId === req.user.id) {
+      if (req.file) {
+        req.body.image = `http://${req.get("host")}/${req.file.path}`;
+      }
+      req.body.shopId = req.shop.id;
+      const newProduct = await Product.create(req.body);
+      res.status(201).json(newProduct);
+    } else {
+      next({
+        status: 401,
+        message: "unautharized",
+      });
     }
-    req.body.shopId = req.shop.id;
-    const newProduct = await Product.create(req.body);
-    res.status(201).json(newProduct);
   } catch (error) {
     next(error);
   }
